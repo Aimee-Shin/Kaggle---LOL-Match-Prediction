@@ -25,7 +25,8 @@ body {
 }
 
 /* Sidebar Styling */
-nav#sidebar {
+nav#sidebar,
+nav#ko-sidebar {
     width: 250px;
     background-color: var(--sidebar-bg);
     border-right: 1px solid var(--border-color);
@@ -35,6 +36,11 @@ nav#sidebar {
     overflow-y: auto;
     display: flex;
     flex-direction: column;
+    z-index: 100;
+}
+
+.hidden {
+    display: none !important;
 }
 
 .logo-area {
