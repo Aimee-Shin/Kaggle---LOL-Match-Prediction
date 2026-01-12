@@ -1,246 +1,261 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LOL 승패 예측 - 분석 포트폴리오</title>
+    <title>LOL Match Prediction - Analysis Portfolio</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <!-- Chart.js CDN -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .hidden {
+            display: none !important;
+        }
+    </style>
 </head>
 
 <body>
 
-    <!-- Sidebar Navigation -->
-    <nav id="sidebar">
-        <div class="logo-area">
-            <h2>LOL Predict</h2>
-        </div>
-        <ul class="nav-links">
-            <li><a href="#intro" class="active">프로젝트 개요</a></li>
-            <li><a href="#data-desc">데이터 설명</a></li>
-            <li><a href="#data-prep">데이터 전처리 + 피처 엔지니어링</a></li>
-            <li><a href="#eda">EDA</a></li>
-            <li><a href="#logistic">Logistic Regression</a></li>
-            <li><a href="#random-forest">Random Forest</a></li>
-            <li><a href="#lightgbm">LightGBM</a></li>
-            <li><a href="#comparison">모델 비교</a></li>
-            <li><a href="#conclusion">결론</a></li>
-        </ul>
-        <div class="lang-switch">
-            <a href="index_en.html" class="lang-btn">EN</a>
-            <a href="index_ko.html" class="lang-btn active">KO</a>
-        </div>
-    </nav>
+    <!-- English Version Wrapper -->
+    <div id="wrapper-en">
+        <!-- Sidebar Navigation -->
+        <nav id="sidebar">
+            <div class="logo-area">
+                <h2>LOL Predict</h2>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#intro" class="active">Project Overview</a></li>
+                <li><a href="#data-desc">Data Description</a></li>
+                <li><a href="#data-prep">Data Preprocessing + Feature Engineering</a></li>
+                <li><a href="#eda">EDA</a></li>
+                <li><a href="#logistic">Logistic Regression</a></li>
+                <li><a href="#random-forest">Random Forest</a></li>
+                <li><a href="#lightgbm">LightGBM</a></li>
+                <li><a href="#comparison">Model Comparison</a></li>
+                <li><a href="#conclusion">Conclusion</a></li>
+            </ul>
+            <div class="lang-switch">
+                <button onclick="switchLang('en')" class="lang-btn active">EN</button>
+                <button onclick="switchLang('ko')" class="lang-btn">KO</button>
+            </div>
+        </nav>
 
-    <!-- Main Content -->
-    <main>
+        <!-- Main Content -->
+        <main>
+            <header>
+                <h1>League of Legends</h1>
+                <div class="subtitle">Match Outcome Prediction Analysis (Diamond Tier)</div>
+            </header>
 
-        <header>
-            <h1>리그 오브 레전드</h1>
-            <div class="subtitle">매치 승패 예측 분석 (다이아몬드 티어)</div>
-        </header>
+            <!-- Project Overview -->
+            <section id="intro">
+                <h2>Project Overview</h2>
+                <div class="card">
+                    <div class="intro-meta" style="margin-bottom: 1rem; color: #a09b8c; font-size: 0.9rem;">
+                        <span><i class="fas fa-user"></i> Yewon Shin</span> &nbsp;|&nbsp;
+                        <span><i class="fas fa-calendar"></i> 2026.01</span> &nbsp;|&nbsp;
+                        <span><i class="fas fa-project-diagram"></i> Personal Project</span>
+                    </div>
+                    <p>
+                        This project analyzes 10-minute data from Diamond rank matches to predict which key factors
+                        influence game victory. League of Legends is a complex MOBA game where the early game often
+                        dictates
+                        the final outcome.
+                    </p>
 
-        <!-- Project Overview -->
-        <section id="intro">
-            <h2>프로젝트 개요</h2>
-            <div class="card">
-                <div class="intro-meta" style="margin-bottom: 1rem; color: #a09b8c; font-size: 0.9rem;">
-                    <span><i class="fas fa-user"></i> 신예원</span> &nbsp;|&nbsp;
-                    <span><i class="fas fa-calendar"></i> 2026.01</span> &nbsp;|&nbsp;
-                    <span><i class="fas fa-project-diagram"></i> 개인 프로젝트</span>
-                </div>
-                <p>
-                    본 프로젝트는 다이아몬드 랭크의 경기 시작 10분 데이터를 분석하여 어떤 주요 원인들이 게임 승리에 영향을 끼치는지 예측합니다.
-                    리그 오브 레전드는 초반 스노우볼이 게임의 승패를 좌우하는 복잡한 MOBA 게임입니다.
-                </p>
-
-                <h3>프로젝트 목표</h3>
-                <ul style="list-style-type: disc; margin-left: 20px; color: #c8aa6e;">
-                    <li>
-                        <strong>주요 승리 요인 분석:</strong> 다음 요소들과 승리의 상관관계를 분석합니다:
-                        <ul style="list-style-type: circle; margin-left: 20px; color: #f0e6d2;">
-                            <li>퍼스트 블러드(First Blood)의 영향</li>
-                            <li>골드 격차 (Gold Difference)</li>
-                            <li>오브젝트 관리 (드래곤, 전령)</li>
-                            <li>KDA 및 킬 차이</li>
-                            <li>엘리트 몬스터 장악력</li>
-                        </ul>
-                    </li>
-                    <li style="margin-top: 10px;"><strong>경기 결과 예측:</strong> 초반 10분 데이터를 기반으로 머신러닝 모델을 구축하여 승패를 예측합니다.
-                    </li>
-                </ul>
-
-                <h3>사용 기술 스택</h3>
-                <div class="tech-stack-container" style="margin-top: 10px; color: #f0e6d2;">
-                    <ul style="list-style: none; padding: 0;">
-                        <li style="margin-bottom: 8px;">
-                            <strong style="color: #c8aa6e; min-width: 100px; display: inline-block;">언어</strong>
-                            <span class="badge">Python</span>
-                        </li>
-                        <li style="margin-bottom: 8px;">
-                            <strong style="color: #c8aa6e; min-width: 100px; display: inline-block;">데이터</strong>
-                            <span class="badge">Pandas</span> <span class="badge">Numpy</span>
-                        </li>
-                        <li style="margin-bottom: 8px;">
-                            <strong style="color: #c8aa6e; min-width: 100px; display: inline-block;">시각화</strong>
-                            <span class="badge">Matplotlib</span> <span class="badge">Seaborn</span>
-                        </li>
+                    <h3>Project Objectives</h3>
+                    <ul style="list-style-type: disc; margin-left: 20px; color: #c8aa6e;">
                         <li>
-                            <strong style="color: #c8aa6e; min-width: 100px; display: inline-block;">머신러닝</strong>
-                            <span class="badge">Scikit-learn</span> <span class="badge">Logistic Regression</span>
-                            <span class="badge">RandomForest</span> <span class="badge">LightGBM</span> <span
-                                class="badge">Bayes_opt</span>
+                            <strong>Identify Key Factors:</strong> Analyze correlations between victory and factors such
+                            as:
+                            <ul style="list-style-type: circle; margin-left: 20px; color: #f0e6d2;">
+                                <li>First Blood impact</li>
+                                <li>Gold Difference</li>
+                                <li>Objective Control (Dragons, Heralds)</li>
+                                <li>KDA and Kill Difference</li>
+                                <li>Elite Monster Control</li>
+                            </ul>
+                        </li>
+                        <li style="margin-top: 10px;"><strong>Predict Outcome:</strong> Build Machine Learning models to
+                            predict game results based on early game data.</li>
+                    </ul>
+
+                    <h3>Technology Stack Used</h3>
+                    <div class="tech-stack-container" style="margin-top: 10px; color: #f0e6d2;">
+                        <ul style="list-style: none; padding: 0;">
+                            <li style="margin-bottom: 8px;">
+                                <strong
+                                    style="color: #c8aa6e; min-width: 100px; display: inline-block;">Language</strong>
+                                <span class="badge">Python</span>
+                            </li>
+                            <li style="margin-bottom: 8px;">
+                                <strong style="color: #c8aa6e; min-width: 100px; display: inline-block;">Data</strong>
+                                <span class="badge">Pandas</span> <span class="badge">Numpy</span>
+                            </li>
+                            <li style="margin-bottom: 8px;">
+                                <strong
+                                    style="color: #c8aa6e; min-width: 100px; display: inline-block;">Visualization</strong>
+                                <span class="badge">Matplotlib</span> <span class="badge">Seaborn</span>
+                            </li>
+                            <li>
+                                <strong style="color: #c8aa6e; min-width: 100px; display: inline-block;">ML</strong>
+                                <span class="badge">Scikit-learn</span> <span class="badge">Logistic Regression</span>
+                                <span class="badge">RandomForest</span> <span class="badge">LightGBM</span> <span
+                                    class="badge">Bayes_opt</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <h3>Analysis Process</h3>
+                    <div class="process-steps"
+                        style="display: flex; gap: 1rem; margin-top: 15px; color: #f0e6d2; flex-wrap: wrap;">
+                        <div class="step"><span>1. Data Collection</span></div> <i class="fas fa-arrow-right"
+                            style="color:#c8aa6e; margin-top:5px;"></i>
+                        <div class="step"><span>2. Preprocessing</span></div> <i class="fas fa-arrow-right"
+                            style="color:#c8aa6e; margin-top:5px;"></i>
+                        <div class="step"><span>3. Feature Eng.</span></div> <i class="fas fa-arrow-right"
+                            style="color:#c8aa6e; margin-top:5px;"></i>
+                        <div class="step"><span>4. EDA</span></div> <i class="fas fa-arrow-right"
+                            style="color:#c8aa6e; margin-top:5px;"></i>
+                        <div class="step"><span>5. Modeling</span></div> <i class="fas fa-arrow-right"
+                            style="color:#c8aa6e; margin-top:5px;"></i>
+                        <div class="step"><span>6. Insights</span></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Data Description -->
+            <section id="data-desc">
+                <h2>Data Description</h2>
+                <div class="card">
+                    <p>
+                        <strong>Dataset Source:</strong>
+                        <a href="https://www.kaggle.com/datasets/bobbyscience/league-of-legends-diamond-ranked-games-10-min"
+                            target="_blank" style="color: #c8aa6e; text-decoration: underline;">
+                            Kaggle - LOL Diamond Ranked Games (10 min)
+                        </a>
+                    </p>
+
+                    <div class="metrics-row" style="margin: 2rem 0;">
+                        <div class="metric-box">
+                            <span class="metric-value">9,879</span>
+                            <span class="metric-label">Matches Analyzed</span>
+                        </div>
+                        <div class="metric-box">
+                            <span class="metric-value">49.9%</span>
+                            <span class="metric-label">Blue Win Rate</span>
+                        </div>
+                        <div class="metric-box">
+                            <span class="metric-value">40</span>
+                            <span class="metric-label">Total Features</span>
+                        </div>
+                    </div>
+
+                    <h3>Key Variables</h3>
+                    <p style="margin-bottom: 1rem; color: #a09b8c;">
+                        Since the target variable is Blue Team Wins, this analysis focuses on key features directly
+                        related
+                        to the Blue Team's performance. The remaining 20 variables not listed in the table correspond to
+                        the
+                        Red Team's features.
+                    </p>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Variable Name</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="target-row">
+                                    <td><code>blueWins</code></td>
+                                    <td>Target Variable (1: Blue Team Wins, 0: Red Team Wins)</td>
+                                </tr>
+                                <tr>
+                                    <td><code>blueWardsPlaced</code> / <code>Destroyed</code></td>
+                                    <td>Number of wards placed/destroyed by Blue team</td>
+                                </tr>
+                                <tr>
+                                    <td><code>blueFirstBlood</code></td>
+                                    <td>1 if Blue team got First Blood, 0 otherwise</td>
+                                </tr>
+                                <tr>
+                                    <td><code>blueKills</code> / <code>Deaths</code> / <code>Assists</code></td>
+                                    <td>KDA stats for Blue team</td>
+                                </tr>
+                                <tr>
+                                    <td><code>blueEliteMonsters</code></td>
+                                    <td>Total elite monsters (Dragons + Heralds) killed by Blue</td>
+                                </tr>
+                                <tr>
+                                    <td><code>blueDragons</code> / <code>Heralds</code></td>
+                                    <td>Specific counts of Dragons and Rift Heralds killed</td>
+                                </tr>
+                                <tr>
+                                    <td><code>blueTowersDestroyed</code></td>
+                                    <td>Number of enemy towers destroyed by Blue team</td>
+                                </tr>
+                                <tr>
+                                    <td><code>blueTotalGold</code></td>
+                                    <td>Total gold accumulated by Blue team</td>
+                                </tr>
+                                <tr>
+                                    <td><code>blueAvgLevel</code></td>
+                                    <td>Average champion level of Blue team</td>
+                                </tr>
+                                <tr>
+                                    <td><code>blueTotalExperience</code></td>
+                                    <td>Total experience points of Blue team</td>
+                                </tr>
+                                <tr>
+                                    <td><code>blueTotalMinionsKilled</code></td>
+                                    <td>Total CS (Creep Score) for Blue team lanes</td>
+                                </tr>
+                                <tr>
+                                    <td><code>blueTotalJungleMinionsKilled</code></td>
+                                    <td>Total Jungle CS for Blue team</td>
+                                </tr>
+                                <tr>
+                                    <td><code>blueGoldDiff</code></td>
+                                    <td>Gold Difference (Blue Gold - Red Gold)</td>
+                                </tr>
+                                <tr>
+                                    <td><code>blueExperienceDiff</code></td>
+                                    <td>Experience Difference (Blue XP - Red XP)</td>
+                                </tr>
+                                <tr>
+                                    <td><code>blueCSPerMin</code></td>
+                                    <td>Blue team CS per minute</td>
+                                </tr>
+                                <tr>
+                                    <td><code>blueGoldPerMin</code></td>
+                                    <td>Blue team Gold per minute</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Data Preprocessing -->
+            <section id="data-prep">
+                <h2>Data Preprocessing + Feature Engineering</h2>
+                <div class="card">
+                    <h3>Variable Adjustments</h3>
+                    <ul style="list-style-type: disc; margin-left: 20px; color: #f0e6d2;">
+                        <li><strong>Removed:</strong> <code>gameId</code> (Unique identifier not useful for prediction).
+                        </li>
+                        <li><strong>Added:</strong>
+                            <code>blueKDA</code> (Overall KDA ratio) and
+                            <code>blueKillDiff</code> (Kill difference vs Red team).
                         </li>
                     </ul>
-                </div>
 
-                <h3>분석 프로세스</h3>
-                <div class="process-steps"
-                    style="display: flex; gap: 1rem; margin-top: 15px; color: #f0e6d2; flex-wrap: wrap;">
-                    <div class="step"><span>1. 데이터 수집</span></div> <i class="fas fa-arrow-right"
-                        style="color:#c8aa6e; margin-top:5px;"></i>
-                    <div class="step"><span>2. 데이터 전처리</span></div> <i class="fas fa-arrow-right"
-                        style="color:#c8aa6e; margin-top:5px;"></i>
-                    <div class="step"><span>3. 피처 엔지니어링</span></div> <i class="fas fa-arrow-right"
-                        style="color:#c8aa6e; margin-top:5px;"></i>
-                    <div class="step"><span>4. EDA</span></div> <i class="fas fa-arrow-right"
-                        style="color:#c8aa6e; margin-top:5px;"></i>
-                    <div class="step"><span>5. 모델링</span></div> <i class="fas fa-arrow-right"
-                        style="color:#c8aa6e; margin-top:5px;"></i>
-                    <div class="step"><span>6. 인사이트 도출</span></div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Data Description -->
-        <section id="data-desc">
-            <h2>데이터 설명</h2>
-            <div class="card">
-                <p>
-                    <strong>데이터셋 출처:</strong>
-                    <a href="https://www.kaggle.com/datasets/bobbyscience/league-of-legends-diamond-ranked-games-10-min"
-                        target="_blank" style="color: #c8aa6e; text-decoration: underline;">
-                        Kaggle - LOL Diamond Ranked Games (10 min)
-                    </a>
-                </p>
-
-                <div class="metrics-row" style="margin: 2rem 0;">
-                    <div class="metric-box">
-                        <span class="metric-value">9,879</span>
-                        <span class="metric-label">분석된 경기 수</span>
-                    </div>
-                    <div class="metric-box">
-                        <span class="metric-value">49.9%</span>
-                        <span class="metric-label">블루팀 승률</span>
-                    </div>
-                    <div class="metric-box">
-                        <span class="metric-value">40</span>
-                        <span class="metric-label">전체 변수</span>
-                    </div>
-                </div>
-
-                <h3>주요 변수</h3>
-                <p style="margin-bottom: 1rem; color: #a09b8c;">
-                    타켓 변수가 블루팀 승리이므로 분석에 집중된 주요 변수들은 블루팀에 직접적으로 관련된 게임 요소 (features) 를 사용하였습니다.
-                    테이블에 포함되지 않은 나머지 20개의 변수들은 똑같은 레드팀의 features 입니다.
-                </p>
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>변수명</th>
-                                <th>설명</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr class="target-row">
-                                <td><code>blueWins</code></td>
-                                <td>타겟 변수 (1: 블루팀 승리, 0: 레드팀 승리)</td>
-                            </tr>
-                            <tr>
-                                <td><code>blueWardsPlaced</code> / <code>Destroyed</code></td>
-                                <td>블루팀이 설치/파괴한 와드 수</td>
-                            </tr>
-                            <tr>
-                                <td><code>blueFirstBlood</code></td>
-                                <td>블루팀의 퍼스트 블러드 획득 여부 (1: 획득, 0: 미획득)</td>
-                            </tr>
-                            <tr>
-                                <td><code>blueKills</code> / <code>Deaths</code> / <code>Assists</code></td>
-                                <td>블루팀의 KDA 지표 (킬, 데스, 어시스트)</td>
-                            </tr>
-                            <tr>
-                                <td><code>blueEliteMonsters</code></td>
-                                <td>블루팀이 처치한 총 엘리트 몬스터 수 (드래곤 + 전령)</td>
-                            </tr>
-                            <tr>
-                                <td><code>blueDragons</code> / <code>Heralds</code></td>
-                                <td>처치한 드래곤 및 전령의 수</td>
-                            </tr>
-                            <tr>
-                                <td><code>blueTowersDestroyed</code></td>
-                                <td>블루팀이 파괴한 적 포탑 수</td>
-                            </tr>
-                            <tr>
-                                <td><code>blueTotalGold</code></td>
-                                <td>블루팀이 획득한 총 골드</td>
-                            </tr>
-                            <tr>
-                                <td><code>blueAvgLevel</code></td>
-                                <td>블루팀 챔피언 평균 레벨</td>
-                            </tr>
-                            <tr>
-                                <td><code>blueTotalExperience</code></td>
-                                <td>블루팀 총 경험치</td>
-                            </tr>
-                            <tr>
-                                <td><code>blueTotalMinionsKilled</code></td>
-                                <td>블루팀 총 미니언 처치 수 (CS)</td>
-                            </tr>
-                            <tr>
-                                <td><code>blueTotalJungleMinionsKilled</code></td>
-                                <td>블루팀 총 정글 미니언 처치 수</td>
-                            </tr>
-                            <tr>
-                                <td><code>blueGoldDiff</code></td>
-                                <td>골드 격차 (블루팀 골드 - 레드팀 골드)</td>
-                            </tr>
-                            <tr>
-                                <td><code>blueExperienceDiff</code></td>
-                                <td>경험치 격차 (블루팀 경험치 - 레드팀 경험치)</td>
-                            </tr>
-                            <tr>
-                                <td><code>blueCSPerMin</code></td>
-                                <td>블루팀 분당 CS</td>
-                            </tr>
-                            <tr>
-                                <td><code>blueGoldPerMin</code></td>
-                                <td>블루팀 분당 골드 획득량</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </section>
-
-        <!-- Data Preprocessing -->
-        <section id="data-prep">
-            <h2>데이터 전처리 + 피처 엔지니어링</h2>
-            <div class="card">
-                <h3>변수 조정 내역</h3>
-                <ul style="list-style-type: disc; margin-left: 20px; color: #f0e6d2;">
-                    <li><strong>제거된 변수:</strong> <code>gameId</code> (경기 식별자로 예측에 불필요하여 제거).</li>
-                    <li><strong>추가된 변수:</strong>
-                        <code>blueKDA</code> (전체 KDA 비율) 및
-                        <code>blueKillDiff</code> (레드팀과의 킬 차이).
-                    </li>
-                </ul>
-
-                <h3 style="margin-top: 1.5rem;">전처리 및 피처 엔지니어링 코드</h3>
-                <pre><code class="language-python" style="background: #121212; display: block; padding: 1rem; border-radius: 5px; overflow-x: auto; color: #dcdcdc;">
+                    <h3 style="margin-top: 1.5rem;">Preprocessing and Feature Engineering Code</h3>
+                    <pre><code class="language-python" style="background: #121212; display: block; padding: 1rem; border-radius: 5px; overflow-x: auto; color: #dcdcdc;">
 # Remove 'gameId' column
 df = df.drop('gameId', axis=1)
 
@@ -248,329 +263,919 @@ df = df.drop('gameId', axis=1)
 df['blueKDA'] = (df['blueKills'] + df['blueAssists']) / df['blueDeaths'].replace(0, 1)
 df['blueKillDiff'] = df['blueKills'] - df['redKills']
                 </code></pre>
-            </div>
-        </section>
-
-        <!-- EDA -->
-        <section id="eda">
-            <h2>데이터 탐색 (EDA)</h2>
-            <p>승리와 상관관계가 높은 주요 게임 지표들을 분석했습니다.</p>
-
-            <div class="grid-2">
-                <div class="card">
-                    <h3><i class="fas fa-skull"></i> 퍼스트 블러드 (First Blood)</h3>
-                    <div class="chart-container">
-                        <canvas id="fbChart"></canvas>
-                    </div>
-                    <p style="text-align: center; margin-top: 1rem; color: #a09b8c;">
-                        첫 킬을 획득하면 승률이 약 20% 상승합니다.
-                    </p>
                 </div>
+            </section>
 
-                <div class="card">
-                    <h3><i class="fas fa-coins"></i> 골드 격차 (Gold Diff)</h3>
-                    <p>
-                        골드 격차는 가장 강력한 예측 변수입니다. 아래 히스토그램에서 볼 수 있듯이 명확한 구분이 존재합니다:
-                    </p>
-                    <img src="./assets/gold_diff_histogram.png" alt="Gold Difference Histogram"
-                        style="width: 100%; border-radius: 10px; border: 1px solid #3c3c3c; margin-top: 10px;">
-                    <p style="margin-top: 1rem; color: #a09b8c;">
-                        승리한 팀은 양의 골드 격차를 보이는 경향이 있으며, 패배한 팀은 음의 골드 격차를 중심으로 분포합니다.
-                        <br><br>
-                        골드 격차가 0 근처인 경우 상당한 중첩이 발생하며, 이는 작은 골드 우위(약 -1000 ~ +1000)가 승리를 보장하지 않음을 나타냅니다.
-                        극단적인 골드 격차는 명확한 분리를 보여주며, 큰 양의 골드 격차는 승리로, 큰 음의 골드 격차는 패배로 이어집니다.
-                    </p>
-                </div>
+            <!-- EDA -->
+            <section id="eda">
+                <h2>Exploratory Data Analysis (EDA)</h2>
+                <p>We analyzed key gameplay indicators to understand their correlation with winning.</p>
 
-                <div class="card">
-                    <h3><i class="fas fa-dragon"></i> 엘리트 몬스터 (Elite Monsters)</h3>
-                    <div class="chart-container">
-                        <canvas id="eliteMonstersChart"></canvas>
-                    </div>
-                    <p style="margin-top: 1rem;">
-                        엘리트 몬스터를 많이 처치할수록 승률이 높아집니다.
-                        하지만 10분 내에 드래곤과 전령을 모두 챙기는 것은 드뭅니다.
-                        <strong>드래곤 우선순위</strong>(승률 22% 상승)가 전령(12% 상승)보다 더 확실한 승리 요인입니다.
-                    </p>
-                </div>
-
-                <div class="card">
-                    <h3><i class="fas fa-dragon"></i> 드래곤 제어</h3>
-                    <div class="chart-container">
-                        <canvas id="dragonChart"></canvas>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <h3><i class="fas fa-bug"></i> 전령 제어</h3>
-                    <div class="chart-container">
-                        <canvas id="heraldChart"></canvas>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <h3><i class="fas fa-crosshairs"></i> KDA와 승률</h3>
-                    <div class="chart-container">
-                        <canvas id="kdaChart"></canvas>
-                    </div>
-                    <p style="margin-top: 1rem;">
-                        KDA는 승리와 높은 상관관계를 가집니다.
-                        KDA가 2.5를 넘으면 승률이 65%를 초과하며,
-                        4.0을 넘으면 80% 이상으로 급증합니다.
-                    </p>
-                </div>
-
-                <div class="card full-width">
-                    <h3><i class="fas fa-project-diagram"></i> 주요 요인 상관관계</h3>
-                    <p>
-                        주요 특성들(골드, 경험치, 킬, KDA, 엘리트몬스터) 간의 상관관계를 분석했습니다.
-                    </p>
-                    <img src="./assets/key_factors_heatmap.png" alt="Key Factors Correlation Heatmap"
-                        style="width: 100%; border-radius: 10px; border: 1px solid #3c3c3c; margin-top: 10px;">
-                    <p style="margin-top: 1rem; color: #a09b8c;">
-                        골드 격차와 경험치 격차는 매우 강한 상관관계를 보입니다. 라인 주도권을 잡은 동안 팀은 골드와 경험치를 동시에 확보하는 경향이 있어 이 두 변수 간의 강한 관계를
-                        설명해줍니다.
-                        <br><br>
-                        킬과 KDA 또한 골드 격차와 비교적 강한 양의 상관관계를 보입니다. 킬 증가는 추가 골드 획득으로 직결됩니다. KDA는 데스 횟수를 고려하므로, 적은 데스는 중단 없이
-                        골드를 지속적으로 확보할 가능성을 높입니다.
-                        <br><br>
-                        엘리트 몬스터는 골드 격차와 양의 상관관계를 보이지만, 다른 변수들에 비해 그 강도는 약합니다. 이는 엘리트 몬스터 확보가 승패를 직접 결정하기보다는 골드 우위에 기여하는
-                        간접적인 요인으로 작용함을 시사합니다.
-                    </p>
-                </div>
-            </div>
-        </section>
-
-        <!-- Logistic Regression -->
-        <section id="logistic">
-            <h2>모델 훈련 (Model Training)</h2>
-            <div class="card" style="margin-bottom: 2rem;">
-                <h3>데이터 세트 분할 (Dataset Split)</h3>
-                <p>
-                    모델 성능 평가를 위해 전체 데이터를 훈련(70%) 세트와 테스트(30%) 세트로 무작위 분할했습니다.
-                    승/패 비율 유지를 위해 층화 추출(Stratified Sampling)을 사용했습니다.
-                    <br><br>
-                    타겟 변수는 <strong>blueWins</strong>(블루팀 승리)입니다. EDA를 기반으로 승패에 영향을 미칠 것으로 예상되는
-                    변수(<strong>blueFirstBlood</strong>, <strong>blueDragons</strong>, <strong>blueHeralds</strong>,
-                    <strong>blueGoldDiff</strong>, <strong>blueExperienceDiff</strong>, <strong>blueKDA</strong>,
-                    <strong>blueKillDiff</strong>)를 선정했습니다.
-                    <br><br>
-                    <strong>blueWardsPlaced</strong>, <strong>blueWardsDestroyed</strong>,
-                    <strong>blueTowersDestroyed</strong>, <strong>blueCSPerMin</strong>과 같은 변수들도 의미 있는 지표가 될 수 있으나 비교적
-                    간접적인 요인이므로 함께 포함했습니다.
-                </p>
-                <div class="code-block"
-                    style="background: #0f1215; padding: 1rem; border-radius: 4px; font-family: monospace; margin-top: 0.5rem; color: #c8aa6e;">
-                    train_test_split(X, Y, test_size=0.3, stratify=Y, random_state=1234)
-                </div>
-            </div>
-
-            <h2>로지스틱 회귀 (Logistic Regression)</h2>
-            <div class="card">
-                <p>각 특성이 승률에 미치는 영향을 명확하게 해석할 수 있는 통계적 베이스라인 모델입니다.</p>
                 <div class="grid-2">
-                    <div>
-                        <h3>성능 평가</h3>
-                        <table class="data-table">
+                    <div class="card">
+                        <h3><i class="fas fa-skull"></i> First Blood</h3>
+                        <div class="chart-container">
+                            <canvas id="fbChart"></canvas>
+                        </div>
+                        <p style="text-align: center; margin-top: 1rem; color: #a09b8c;">
+                            Securing First Blood increases win probability by ~20%.
+                        </p>
+                    </div>
+
+                    <div class="card">
+                        <h3><i class="fas fa-coins"></i> Gold Difference</h3>
+                        <p>
+                            Gold difference is the strongest individual predictor. As seen in the histogram below, there
+                            is
+                            a clear separation:
+                        </p>
+                        <img src="./assets/gold_diff_histogram.png" alt="Gold Difference Histogram"
+                            style="width: 100%; border-radius: 10px; border: 1px solid #3c3c3c; margin-top: 10px;">
+                        <p style="margin-top: 1rem; color: #a09b8c;">
+                            Winning teams tends to have a positive gold difference, while losing teams are are centered
+                            around negative gold differences.
+                            <br><br>
+                            There is a significant overlap around zero gold difference, indicating that small gold
+                            advantages (approximate range between -1000 < x < +1000) do not guarantee victory. Extreme
+                                gold differences show clear separation, where large positive gold lead to wins and large
+                                negative gold leads to losses. </p>
+                    </div>
+
+                    <div class="card">
+                        <h3><i class="fas fa-dragon"></i> Elite Monsters</h3>
+                        <div class="chart-container">
+                            <canvas id="eliteMonstersChart"></canvas>
+                        </div>
+                        <p style="margin-top: 1rem;">
+                            The more elite monsters secured, the higher the win rate.
+                            However, getting both Dragon and Herald in 10 mins is rare.
+                            <strong>Prioritizing Dragon</strong> (22% increase) is more reliable than Herald (12%
+                            increase).
+                        </p>
+                    </div>
+
+                    <div class="card">
+                        <h3><i class="fas fa-dragon"></i> Dragon Control</h3>
+                        <div class="chart-container">
+                            <canvas id="dragonChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h3><i class="fas fa-bug"></i> Rift Herald</h3>
+                        <div class="chart-container">
+                            <canvas id="heraldChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h3><i class="fas fa-crosshairs"></i> KDA vs Win Rate</h3>
+                        <div class="chart-container">
+                            <canvas id="kdaChart"></canvas>
+                        </div>
+                        <p style="margin-top: 1rem;">
+                            KDA has a high correlation with winning.
+                            If KDA > 2.5, the win rate exceeds 65%.
+                            If KDA > 4.0, the win rate jumps to over 80%.
+                        </p>
+                    </div>
+
+                    <div class="card full-width">
+                        <h3><i class="fas fa-project-diagram"></i> Key Factors Correlation</h3>
+                        <p>
+                            We analyzed the correlation between top features: GoldDiff, ExpDiff, KillDiff, KDA, and
+                            EliteMonsters.
+                        </p>
+                        <img src="./assets/key_factors_heatmap.png" alt="Key Factors Correlation Heatmap"
+                            style="width: 100%; border-radius: 10px; border: 1px solid #3c3c3c; margin-top: 10px;">
+                        <p style="margin-top: 1rem; color: #a09b8c;">
+                            Gold difference and experience difference show a very strong correlation. During lane
+                            dominance,
+                            teams tend to secure gold and experience simultaneously, which explains the strong
+                            relationship
+                            between these two variables.
+                            <br><br>
+                            Kills and KDA also exhibit a relatively strong positive correlation with gold difference. An
+                            increase in kills directly results in additional gold gains. Since KDA accounts for death
+                            counts, fewer deaths increase the likelihood of continuously securing gold without
+                            interruptions.
+                            <br><br>
+                            Elite monsters show a positive correlation with gold difference, but the strength of this
+                            relationship is weaker compared to other features. This suggests that securing elite
+                            monsters
+                            does not directly determine match outcomes; rather, it functions as an indirect factor that
+                            contributes to gold advantage.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Logistic Regression -->
+            <section id="logistic">
+                <h2>Model Training</h2>
+                <div class="card" style="margin-bottom: 2rem;">
+                    <h3>Dataset Split</h3>
+                    <p>
+                        The dataset was randomly split into training (70%) and testing (30%) sets to evaluate model
+                        performance on unseen data.
+                        Stratified sampling was used to maintain the win/loss ratio.
+                        <br><br>
+                        Our target variable is <strong>blueWins</strong>. Based on the EDA, several feature variables
+                        expected to affect match outcomes were selected, including <strong>blueFirstBlood</strong>,
+                        <strong>blueDragons</strong>, <strong>blueHeralds</strong>, <strong>blueGoldDiff</strong>,
+                        <strong>blueExperienceDiff</strong>, <strong>blueKDA</strong>, and
+                        <strong>blueKillDiff</strong>.
+                        <br><br>
+                        Other variables such as <strong>blueWardsPlaced</strong>, <strong>blueWardsDestroyed</strong>,
+                        <strong>blueTowersDestroyed</strong>, and <strong>blueCSPerMin</strong> were selected, as they
+                        may
+                        serve as meaningful features but represent more indirect factors.
+                    </p>
+                    <div class="code-block"
+                        style="background: #0f1215; padding: 1rem; border-radius: 4px; font-family: monospace; margin-top: 0.5rem; color: #c8aa6e;">
+                        train_test_split(X, Y, test_size=0.3, stratify=Y, random_state=1234)
+                    </div>
+                </div>
+
+                <h2>Logistic Regression</h2>
+                <div class="card">
+                    <p>A statistical baseline model that provides clear interpretability of feature impact.</p>
+                    <div class="grid-2">
+                        <div>
+                            <h3>Performance</h3>
+                            <table class="data-table">
+                                <tr>
+                                    <td>Accuracy</td>
+                                    <td class="highlight">~74%</td>
+                                </tr>
+                                <tr>
+                                    <td>F1 Score (Test)</td>
+                                    <td class="highlight">0.739</td>
+                                </tr>
+                                <tr>
+                                    <td>AUC Score (Test)</td>
+                                    <td class="highlight">0.812</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div>
+                            <h3>Feature Coefficients</h3>
+                            <div class="chart-container">
+                                <canvas id="featLRChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Random Forest -->
+            <section id="random-forest">
+                <h2>Random Forest</h2>
+                <div class="card">
+                    <p>An ensemble learning method using multiple decision trees to improve accuracy and control
+                        overfitting.</p>
+
+                    <h3>Optimization (Bayesian)</h3>
+                    <p>We used Bayesian Optimization to tune hyperparameters (n_estimators, max_depth).</p>
+
+                    <div class="grid-2" style="margin-top: 2rem;">
+                        <div>
+                            <h3>Performance (Tuned)</h3>
+                            <table class="data-table">
+                                <tr>
+                                    <td>F1 Score (Test)</td>
+                                    <td class="highlight">0.733</td>
+                                </tr>
+                                <tr>
+                                    <td>AUC Score (Test)</td>
+                                    <td class="highlight">0.809</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div>
+                            <h3>Feature Importance</h3>
+                            <div class="chart-container">
+                                <canvas id="featRFChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- LightGBM -->
+            <section id="lightgbm">
+                <h2>LightGBM</h2>
+                <div class="card">
+                    <p>A fast, gradient-boosting framework capable of handling large-scale data efficiently.</p>
+
+                    <div class="grid-2">
+                        <div>
+                            <h3>Performance (Tuned)</h3>
+                            <table class="data-table">
+                                <tr>
+                                    <td>F1 Score (Test)</td>
+                                    <td class="highlight">0.736</td>
+                                </tr>
+                                <tr>
+                                    <td>AUC Score (Test)</td>
+                                    <td class="highlight">0.811</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div>
+                            <h3>Feature Importance (Gain)</h3>
+                            <div class="chart-container">
+                                <canvas id="featLGBMChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Comparison -->
+            <section id="comparison">
+                <h2>Model Comparison</h2>
+                <div class="card">
+                    <table class="data-table">
+                        <thead>
                             <tr>
-                                <td>정확도 (Accuracy)</td>
-                                <td class="highlight">~74%</td>
+                                <th>Model</th>
+                                <th>F1 Score (Test)</th>
+                                <th>AUC Score (Test)</th>
+                                <th>Note</th>
                             </tr>
+                        </thead>
+                        <tbody>
                             <tr>
-                                <td>F1 Score (Test)</td>
+                                <td><strong>Logistic Regression</strong></td>
                                 <td class="highlight">0.739</td>
-                            </tr>
-                            <tr>
-                                <td>AUC Score (Test)</td>
                                 <td class="highlight">0.812</td>
-                            </tr>
-                        </table>
-                    </div>
-                    <div>
-                        <h3>특성 중요도 (계수)</h3>
-                        <div class="chart-container">
-                            <canvas id="featLRChart"></canvas>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Random Forest -->
-        <section id="random-forest">
-            <h2>랜덤 포레스트 (Random Forest)</h2>
-            <div class="card">
-                <p>여러 의사결정 나무를 사용하여 정확도를 높이고 과적합을 방지하는 앙상블 학습 방법입니다.</p>
-
-                <h3>최적화 (Bayesian Optimization)</h3>
-                <p>베이지안 최적화를 사용하여 하이퍼파라미터(n_estimators, max_depth)를 튜닝했습니다.</p>
-
-                <div class="grid-2" style="margin-top: 2rem;">
-                    <div>
-                        <h3>성능 평가 (튜닝 후)</h3>
-                        <table class="data-table">
-                            <tr>
-                                <td>F1 Score (Test)</td>
-                                <td class="highlight">0.733</td>
+                                <td>Best Balance</td>
                             </tr>
                             <tr>
-                                <td>AUC Score (Test)</td>
-                                <td class="highlight">0.809</td>
+                                <td>Random Forest (BO)</td>
+                                <td>0.733</td>
+                                <td>0.809</td>
+                                <td>Robust</td>
                             </tr>
-                        </table>
+                            <tr>
+                                <td>LightGBM (BO)</td>
+                                <td>0.736</td>
+                                <td>0.811</td>
+                                <td>Fastest</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="card">
+                    <h3><i class="fas fa-chart-bar"></i> Feature Importance Analysis</h3>
+                    <p>
+                        Logistic Regression provides the clearest interpretation of how each feature impacts the win
+                        probability.
+                    </p>
+                    <div class="chart-container" style="margin-bottom: 2rem;">
+                        <canvas id="featLRCompChart"></canvas>
                     </div>
-                    <div>
-                        <h3>특성 중요도</h3>
-                        <div class="chart-container">
-                            <canvas id="featRFChart"></canvas>
-                        </div>
+
+                    <h3>Top 3 Common Feature Importance</h3>
+                    <p>
+                        All models proved that gold difference, experience difference, and dragons are the most
+                        significant
+                        factors impacting match outcomes.
+                    </p>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Rank</th>
+                                <th>Feature</th>
+                                <th>Importance Characteristics</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td><strong>Gold Difference</strong></td>
+                                <td class="highlight">Most Important (Coeff = 0.96)</td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td><strong>Experience Difference</strong></td>
+                                <td>High Correlation (Coeff = 0.51)</td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td><strong>Dragons</strong></td>
+                                <td>Strategic Value (Coeff = 0.26)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Conclusion -->
+            <section id="conclusion">
+                <h2>Conclusion</h2>
+                <div class="card">
+                    <h3>Key Findings</h3>
+                    <ul>
+                        <li><strong>Gold Difference:</strong> most important feature (coefficient = 0.96)</li>
+                        <li><strong>Experience Difference:</strong> coefficient = 0.51 / correlation to gold difference
+                            =
+                            0.89</li>
+                        <li><strong>Dragon:</strong> coefficient = 0.26 / win rate = ~22%p ⬆</li>
+                    </ul>
+
+                    <h3>Model Performance</h3>
+                    <ul>
+                        <li><strong>Best Model:</strong> Logistic Regression</li>
+                        <li><strong>f1-score:</strong> 0.74</li>
+                        <li><strong>AUC:</strong> 0.82</li>
+                    </ul>
+
+                    <h3>Insights</h3>
+                    <ol style="margin-top: 1rem; padding-left: 1.5rem; color: #a09b8c;">
+                        <li style="margin-bottom: 0.5rem;">Staying in lane without dying for a long period can increase
+                            both
+                            gold and experience.</li>
+                        <li style="margin-bottom: 0.5rem;">Strong lane pushing or control is needed at the early game
+                            stage.
+                        </li>
+                        <li style="margin-bottom: 0.5rem;">Prioritizing Dragons over Heralds is more reliable for
+                            early-game
+                            strategy.</li>
+                    </ol>
+                </div>
+            </section>
+
+            <footer>
+                <p>Analysis Portfolio Created by Antigravity | Based on LOL_Match_Prediction_Analysis.ipynb</p>
+            </footer>
+        </main>
+    </div>
+
+    <!-- Korean Version Wrapper (Hidden by default) -->
+    <div id="wrapper-ko" class="hidden">
+        <!-- Sidebar Navigation -->
+        <nav id="ko-sidebar">
+            <div class="logo-area">
+                <h2>LOL Predict</h2>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#ko-intro" class="active">프로젝트 개요</a></li>
+                <li><a href="#ko-data-desc">데이터 설명</a></li>
+                <li><a href="#ko-data-prep">데이터 전처리 + 피처 엔지니어링</a></li>
+                <li><a href="#ko-eda">EDA</a></li>
+                <li><a href="#ko-logistic">Logistic Regression</a></li>
+                <li><a href="#ko-random-forest">Random Forest</a></li>
+                <li><a href="#ko-lightgbm">LightGBM</a></li>
+                <li><a href="#ko-comparison">모델 비교</a></li>
+                <li><a href="#ko-conclusion">결론</a></li>
+            </ul>
+            <div class="lang-switch">
+                <button onclick="switchLang('en')" class="lang-btn">EN</button>
+                <button onclick="switchLang('ko')" class="lang-btn active">KO</button>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main>
+            <header>
+                <h1>리그 오브 레전드</h1>
+                <div class="subtitle">매치 승패 예측 분석 (다이아몬드 티어)</div>
+            </header>
+
+            <!-- Project Overview -->
+            <section id="ko-intro">
+                <h2>프로젝트 개요</h2>
+                <div class="card">
+                    <div class="intro-meta" style="margin-bottom: 1rem; color: #a09b8c; font-size: 0.9rem;">
+                        <span><i class="fas fa-user"></i> 신예원</span> &nbsp;|&nbsp;
+                        <span><i class="fas fa-calendar"></i> 2026.01</span> &nbsp;|&nbsp;
+                        <span><i class="fas fa-project-diagram"></i> 개인 프로젝트</span>
+                    </div>
+                    <p>
+                        본 프로젝트는 다이아몬드 랭크의 경기 시작 10분 데이터를 분석하여 어떤 주요 원인들이 게임 승리에 영향을 끼치는지 예측합니다.
+                        리그 오브 레전드는 초반 스노우볼이 게임의 승패를 좌우하는 복잡한 MOBA 게임입니다.
+                    </p>
+
+                    <h3>프로젝트 목표</h3>
+                    <ul style="list-style-type: disc; margin-left: 20px; color: #c8aa6e;">
+                        <li>
+                            <strong>주요 승리 요인 분석:</strong> 다음 요소들과 승리의 상관관계를 분석합니다:
+                            <ul style="list-style-type: circle; margin-left: 20px; color: #f0e6d2;">
+                                <li>퍼스트 블러드(First Blood)의 영향</li>
+                                <li>골드 격차 (Gold Difference)</li>
+                                <li>오브젝트 관리 (드래곤, 전령)</li>
+                                <li>KDA 및 킬 차이</li>
+                                <li>엘리트 몬스터 장악력</li>
+                            </ul>
+                        </li>
+                        <li style="margin-top: 10px;"><strong>경기 결과 예측:</strong> 초반 10분 데이터를 기반으로 머신러닝 모델을 구축하여 승패를
+                            예측합니다.
+                        </li>
+                    </ul>
+
+                    <h3>사용 기술 스택</h3>
+                    <div class="tech-stack-container" style="margin-top: 10px; color: #f0e6d2;">
+                        <ul style="list-style: none; padding: 0;">
+                            <li style="margin-bottom: 8px;">
+                                <strong style="color: #c8aa6e; min-width: 100px; display: inline-block;">언어</strong>
+                                <span class="badge">Python</span>
+                            </li>
+                            <li style="margin-bottom: 8px;">
+                                <strong style="color: #c8aa6e; min-width: 100px; display: inline-block;">데이터</strong>
+                                <span class="badge">Pandas</span> <span class="badge">Numpy</span>
+                            </li>
+                            <li style="margin-bottom: 8px;">
+                                <strong style="color: #c8aa6e; min-width: 100px; display: inline-block;">시각화</strong>
+                                <span class="badge">Matplotlib</span> <span class="badge">Seaborn</span>
+                            </li>
+                            <li>
+                                <strong style="color: #c8aa6e; min-width: 100px; display: inline-block;">머신러닝</strong>
+                                <span class="badge">Scikit-learn</span> <span class="badge">Logistic Regression</span>
+                                <span class="badge">RandomForest</span> <span class="badge">LightGBM</span> <span
+                                    class="badge">Bayes_opt</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <h3>분석 프로세스</h3>
+                    <div class="process-steps"
+                        style="display: flex; gap: 1rem; margin-top: 15px; color: #f0e6d2; flex-wrap: wrap;">
+                        <div class="step"><span>1. 데이터 수집</span></div> <i class="fas fa-arrow-right"
+                            style="color:#c8aa6e; margin-top:5px;"></i>
+                        <div class="step"><span>2. 데이터 전처리</span></div> <i class="fas fa-arrow-right"
+                            style="color:#c8aa6e; margin-top:5px;"></i>
+                        <div class="step"><span>3. 피처 엔지니어링</span></div> <i class="fas fa-arrow-right"
+                            style="color:#c8aa6e; margin-top:5px;"></i>
+                        <div class="step"><span>4. EDA</span></div> <i class="fas fa-arrow-right"
+                            style="color:#c8aa6e; margin-top:5px;"></i>
+                        <div class="step"><span>5. 모델링</span></div> <i class="fas fa-arrow-right"
+                            style="color:#c8aa6e; margin-top:5px;"></i>
+                        <div class="step"><span>6. 인사이트 도출</span></div>
                     </div>
                 </div>
-            </div>
-        </section>
+            </section>
 
-        <!-- LightGBM -->
-        <section id="lightgbm">
-            <h2>LightGBM</h2>
-            <div class="card">
-                <p>대규모 데이터를 효율적으로 처리할 수 있는 빠른 그라디언트 부스팅 프레임워크입니다.</p>
+            <!-- Data Description -->
+            <section id="ko-data-desc">
+                <h2>데이터 설명</h2>
+                <div class="card">
+                    <p>
+                        <strong>데이터셋 출처:</strong>
+                        <a href="https://www.kaggle.com/datasets/bobbyscience/league-of-legends-diamond-ranked-games-10-min"
+                            target="_blank" style="color: #c8aa6e; text-decoration: underline;">
+                            Kaggle - LOL Diamond Ranked Games (10 min)
+                        </a>
+                    </p>
+
+                    <div class="metrics-row" style="margin: 2rem 0;">
+                        <div class="metric-box">
+                            <span class="metric-value">9,879</span>
+                            <span class="metric-label">분석된 경기 수</span>
+                        </div>
+                        <div class="metric-box">
+                            <span class="metric-value">49.9%</span>
+                            <span class="metric-label">블루팀 승률</span>
+                        </div>
+                        <div class="metric-box">
+                            <span class="metric-value">40</span>
+                            <span class="metric-label">전체 변수</span>
+                        </div>
+                    </div>
+
+                    <h3>주요 변수</h3>
+                    <p style="margin-bottom: 1rem; color: #a09b8c;">
+                        타켓 변수가 블루팀 승리이므로 분석에 집중된 주요 변수들은 블루팀에 직접적으로 관련된 게임 요소 (features) 를 사용하였습니다.
+                        테이블에 포함되지 않은 나머지 20개의 변수들은 똑같은 레드팀의 features 입니다.
+                    </p>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>변수명</th>
+                                    <th>설명</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="target-row">
+                                    <td><code>blueWins</code></td>
+                                    <td>타겟 변수 (1: 블루팀 승리, 0: 레드팀 승리)</td>
+                                </tr>
+                                <tr>
+                                    <td><code>blueWardsPlaced</code> / <code>Destroyed</code></td>
+                                    <td>블루팀이 설치/파괴한 와드 수</td>
+                                </tr>
+                                <tr>
+                                    <td><code>blueFirstBlood</code></td>
+                                    <td>블루팀의 퍼스트 블러드 획득 여부 (1: 획득, 0: 미획득)</td>
+                                </tr>
+                                <tr>
+                                    <td><code>blueKills</code> / <code>Deaths</code> / <code>Assists</code></td>
+                                    <td>블루팀의 KDA 지표 (킬, 데스, 어시스트)</td>
+                                </tr>
+                                <tr>
+                                    <td><code>blueEliteMonsters</code></td>
+                                    <td>블루팀이 처치한 총 엘리트 몬스터 수 (드래곤 + 전령)</td>
+                                </tr>
+                                <tr>
+                                    <td><code>blueDragons</code> / <code>Heralds</code></td>
+                                    <td>처치한 드래곤 및 전령의 수</td>
+                                </tr>
+                                <tr>
+                                    <td><code>blueTowersDestroyed</code></td>
+                                    <td>블루팀이 파괴한 적 포탑 수</td>
+                                </tr>
+                                <tr>
+                                    <td><code>blueTotalGold</code></td>
+                                    <td>블루팀이 획득한 총 골드</td>
+                                </tr>
+                                <tr>
+                                    <td><code>blueAvgLevel</code></td>
+                                    <td>블루팀 챔피언 평균 레벨</td>
+                                </tr>
+                                <tr>
+                                    <td><code>blueTotalExperience</code></td>
+                                    <td>블루팀 총 경험치</td>
+                                </tr>
+                                <tr>
+                                    <td><code>blueTotalMinionsKilled</code></td>
+                                    <td>블루팀 총 미니언 처치 수 (CS)</td>
+                                </tr>
+                                <tr>
+                                    <td><code>blueTotalJungleMinionsKilled</code></td>
+                                    <td>블루팀 총 정글 미니언 처치 수</td>
+                                </tr>
+                                <tr>
+                                    <td><code>blueGoldDiff</code></td>
+                                    <td>골드 격차 (블루팀 골드 - 레드팀 골드)</td>
+                                </tr>
+                                <tr>
+                                    <td><code>blueExperienceDiff</code></td>
+                                    <td>경험치 격차 (블루팀 경험치 - 레드팀 경험치)</td>
+                                </tr>
+                                <tr>
+                                    <td><code>blueCSPerMin</code></td>
+                                    <td>블루팀 분당 CS</td>
+                                </tr>
+                                <tr>
+                                    <td><code>blueGoldPerMin</code></td>
+                                    <td>블루팀 분당 골드 획득량</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Data Preprocessing -->
+            <section id="ko-data-prep">
+                <h2>데이터 전처리 + 피처 엔지니어링</h2>
+                <div class="card">
+                    <h3>변수 조정 내역</h3>
+                    <ul style="list-style-type: disc; margin-left: 20px; color: #f0e6d2;">
+                        <li><strong>제거된 변수:</strong> <code>gameId</code> (경기 식별자로 예측에 불필요하여 제거).</li>
+                        <li><strong>추가된 변수:</strong>
+                            <code>blueKDA</code> (전체 KDA 비율) 및
+                            <code>blueKillDiff</code> (레드팀과의 킬 차이).
+                        </li>
+                    </ul>
+
+                    <h3 style="margin-top: 1.5rem;">전처리 및 피처 엔지니어링 코드</h3>
+                    <pre><code class="language-python" style="background: #121212; display: block; padding: 1rem; border-radius: 5px; overflow-x: auto; color: #dcdcdc;">
+# Remove 'gameId' column
+df = df.drop('gameId', axis=1)
+
+# Add columns 'blueKDA' and 'blueKillDiff'
+df['blueKDA'] = (df['blueKills'] + df['blueAssists']) / df['blueDeaths'].replace(0, 1)
+df['blueKillDiff'] = df['blueKills'] - df['redKills']
+                </code></pre>
+                </div>
+            </section>
+
+            <!-- EDA -->
+            <section id="ko-eda">
+                <h2>데이터 탐색 (EDA)</h2>
+                <p>승리와 상관관계가 높은 주요 게임 지표들을 분석했습니다.</p>
 
                 <div class="grid-2">
-                    <div>
-                        <h3>성능 평가 (튜닝 후)</h3>
-                        <table class="data-table">
-                            <tr>
-                                <td>F1 Score (Test)</td>
-                                <td class="highlight">0.736</td>
-                            </tr>
-                            <tr>
-                                <td>AUC Score (Test)</td>
-                                <td class="highlight">0.811</td>
-                            </tr>
-                        </table>
-                    </div>
-                    <div>
-                        <h3>특성 중요도 (Gain)</h3>
+                    <div class="card">
+                        <h3><i class="fas fa-skull"></i> 퍼스트 블러드 (First Blood)</h3>
                         <div class="chart-container">
-                            <canvas id="featLGBMChart"></canvas>
+                            <canvas id="ko-fbChart"></canvas>
+                        </div>
+                        <p style="text-align: center; margin-top: 1rem; color: #a09b8c;">
+                            첫 킬을 획득하면 승률이 약 20% 상승합니다.
+                        </p>
+                    </div>
+
+                    <div class="card">
+                        <h3><i class="fas fa-coins"></i> 골드 격차 (Gold Diff)</h3>
+                        <p>
+                            골드 격차는 가장 강력한 예측 변수입니다. 아래 히스토그램에서 볼 수 있듯이 명확한 구분이 존재합니다:
+                        </p>
+                        <img src="./assets/gold_diff_histogram.png" alt="Gold Difference Histogram"
+                            style="width: 100%; border-radius: 10px; border: 1px solid #3c3c3c; margin-top: 10px;">
+                        <p style="margin-top: 1rem; color: #a09b8c;">
+                            승리한 팀은 양의 골드 격차를 보이는 경향이 있으며, 패배한 팀은 음의 골드 격차를 중심으로 분포합니다.
+                            <br><br>
+                            골드 격차가 0 근처인 경우 상당한 중첩이 발생하며, 이는 작은 골드 우위(약 -1000 ~ +1000)가 승리를 보장하지 않음을 나타냅니다.
+                            극단적인 골드 격차는 명확한 분리를 보여주며, 큰 양의 골드 격차는 승리로, 큰 음의 골드 격차는 패배로 이어집니다.
+                        </p>
+                    </div>
+
+                    <div class="card">
+                        <h3><i class="fas fa-dragon"></i> 엘리트 몬스터 (Elite Monsters)</h3>
+                        <div class="chart-container">
+                            <canvas id="ko-eliteMonstersChart"></canvas>
+                        </div>
+                        <p style="margin-top: 1rem;">
+                            엘리트 몬스터를 많이 처치할수록 승률이 높아집니다.
+                            하지만 10분 내에 드래곤과 전령을 모두 챙기는 것은 드뭅니다.
+                            <strong>드래곤 우선순위</strong>(승률 22% 상승)가 전령(12% 상승)보다 더 확실한 승리 요인입니다.
+                        </p>
+                    </div>
+
+                    <div class="card">
+                        <h3><i class="fas fa-dragon"></i> 드래곤 제어</h3>
+                        <div class="chart-container">
+                            <canvas id="ko-dragonChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h3><i class="fas fa-bug"></i> 전령 제어</h3>
+                        <div class="chart-container">
+                            <canvas id="ko-heraldChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h3><i class="fas fa-crosshairs"></i> KDA와 승률</h3>
+                        <div class="chart-container">
+                            <canvas id="ko-kdaChart"></canvas>
+                        </div>
+                        <p style="margin-top: 1rem;">
+                            KDA는 승리와 높은 상관관계를 가집니다.
+                            KDA가 2.5를 넘으면 승률이 65%를 초과하며,
+                            4.0을 넘으면 80% 이상으로 급증합니다.
+                        </p>
+                    </div>
+
+                    <div class="card full-width">
+                        <h3><i class="fas fa-project-diagram"></i> 주요 요인 상관관계</h3>
+                        <p>
+                            주요 특성들(골드, 경험치, 킬, KDA, 엘리트몬스터) 간의 상관관계를 분석했습니다.
+                        </p>
+                        <img src="./assets/key_factors_heatmap.png" alt="Key Factors Correlation Heatmap"
+                            style="width: 100%; border-radius: 10px; border: 1px solid #3c3c3c; margin-top: 10px;">
+                        <p style="margin-top: 1rem; color: #a09b8c;">
+                            골드 격차와 경험치 격차는 매우 강한 상관관계를 보입니다. 라인 주도권을 잡은 동안 팀은 골드와 경험치를 동시에 확보하는 경향이 있어 이 두 변수 간의 강한 관계를
+                            설명해줍니다.
+                            <br><br>
+                            킬과 KDA 또한 골드 격차와 비교적 강한 양의 상관관계를 보입니다. 킬 증가는 추가 골드 획득으로 직결됩니다. KDA는 데스 횟수를 고려하므로, 적은 데스는 중단
+                            없이
+                            골드를 지속적으로 확보할 가능성을 높입니다.
+                            <br><br>
+                            엘리트 몬스터는 골드 격차와 양의 상관관계를 보이지만, 다른 변수들에 비해 그 강도는 약합니다. 이는 엘리트 몬스터 확보가 승패를 직접 결정하기보다는 골드 우위에
+                            기여하는
+                            간접적인 요인으로 작용함을 시사합니다.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Logistic Regression -->
+            <section id="ko-logistic">
+                <h2>모델 훈련 (Model Training)</h2>
+                <div class="card" style="margin-bottom: 2rem;">
+                    <h3>데이터 세트 분할 (Dataset Split)</h3>
+                    <p>
+                        모델 성능 평가를 위해 전체 데이터를 훈련(70%) 세트와 테스트(30%) 세트로 무작위 분할했습니다.
+                        승/패 비율 유지를 위해 층화 추출(Stratified Sampling)을 사용했습니다.
+                        <br><br>
+                        타겟 변수는 <strong>blueWins</strong>(블루팀 승리)입니다. EDA를 기반으로 승패에 영향을 미칠 것으로 예상되는
+                        변수(<strong>blueFirstBlood</strong>, <strong>blueDragons</strong>, <strong>blueHeralds</strong>,
+                        <strong>blueGoldDiff</strong>, <strong>blueExperienceDiff</strong>, <strong>blueKDA</strong>,
+                        <strong>blueKillDiff</strong>)를 선정했습니다.
+                        <br><br>
+                        <strong>blueWardsPlaced</strong>, <strong>blueWardsDestroyed</strong>,
+                        <strong>blueTowersDestroyed</strong>, <strong>blueCSPerMin</strong>과 같은 변수들도 의미 있는 지표가 될 수 있으나
+                        비교적 간접적인 요인이므로 함께 포함했습니다.
+                    </p>
+                    <div class="code-block"
+                        style="background: #0f1215; padding: 1rem; border-radius: 4px; font-family: monospace; margin-top: 0.5rem; color: #c8aa6e;">
+                        train_test_split(X, Y, test_size=0.3, stratify=Y, random_state=1234)
+                    </div>
+                </div>
+
+                <h2>로지스틱 회귀 (Logistic Regression)</h2>
+                <div class="card">
+                    <p>각 특성이 승률에 미치는 영향을 명확하게 해석할 수 있는 통계적 베이스라인 모델입니다.</p>
+                    <div class="grid-2">
+                        <div>
+                            <h3>성능 평가</h3>
+                            <table class="data-table">
+                                <tr>
+                                    <td>정확도 (Accuracy)</td>
+                                    <td class="highlight">~74%</td>
+                                </tr>
+                                <tr>
+                                    <td>F1 Score (Test)</td>
+                                    <td class="highlight">0.739</td>
+                                </tr>
+                                <tr>
+                                    <td>AUC Score (Test)</td>
+                                    <td class="highlight">0.812</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div>
+                            <h3>특성 중요도 (계수)</h3>
+                            <div class="chart-container">
+                                <canvas id="ko-featLRChart"></canvas>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </section>
+            </section>
 
-        <!-- Comparison -->
-        <section id="comparison">
-            <h2>모델 비교</h2>
-            <div class="card">
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>모델</th>
-                            <th>F1 Score (Test)</th>
-                            <th>AUC Score (Test)</th>
-                            <th>비고</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><strong>로지스틱 회귀</strong></td>
-                            <td class="highlight">0.739</td>
-                            <td class="highlight">0.812</td>
-                            <td>가장 균형 잡힌 성능</td>
-                        </tr>
-                        <tr>
-                            <td>랜덤 포레스트 (BO)</td>
-                            <td>0.733</td>
-                            <td>0.809</td>
-                            <td>안정적</td>
-                        </tr>
-                        <tr>
-                            <td>LightGBM (BO)</td>
-                            <td>0.736</td>
-                            <td>0.811</td>
-                            <td>가장 빠름</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+            <!-- Random Forest -->
+            <section id="ko-random-forest">
+                <h2>랜덤 포레스트 (Random Forest)</h2>
+                <div class="card">
+                    <p>여러 의사결정 나무를 사용하여 정확도를 높이고 과적합을 방지하는 앙상블 학습 방법입니다.</p>
 
-            <div class="card">
-                <h3><i class="fas fa-chart-bar"></i> 특성 중요도 분석 (Feature Importance Analysis)</h3>
-                <p>
-                    로지스틱 회귀 모델은 각 특성이 승리 확률에 미치는 영향을 가장 명확하게 보여줍니다.
-                </p>
-                <div class="chart-container" style="margin-bottom: 2rem;">
-                    <canvas id="featLRCompChart"></canvas>
+                    <h3>최적화 (Bayesian Optimization)</h3>
+                    <p>베이지안 최적화를 사용하여 하이퍼파라미터(n_estimators, max_depth)를 튜닝했습니다.</p>
+
+                    <div class="grid-2" style="margin-top: 2rem;">
+                        <div>
+                            <h3>성능 평가 (튜닝 후)</h3>
+                            <table class="data-table">
+                                <tr>
+                                    <td>F1 Score (Test)</td>
+                                    <td class="highlight">0.733</td>
+                                </tr>
+                                <tr>
+                                    <td>AUC Score (Test)</td>
+                                    <td class="highlight">0.809</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div>
+                            <h3>특성 중요도</h3>
+                            <div class="chart-container">
+                                <canvas id="ko-featRFChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- LightGBM -->
+            <section id="ko-lightgbm">
+                <h2>LightGBM</h2>
+                <div class="card">
+                    <p>대규모 데이터를 효율적으로 처리할 수 있는 빠른 그라디언트 부스팅 프레임워크입니다.</p>
+
+                    <div class="grid-2">
+                        <div>
+                            <h3>성능 평가 (튜닝 후)</h3>
+                            <table class="data-table">
+                                <tr>
+                                    <td>F1 Score (Test)</td>
+                                    <td class="highlight">0.736</td>
+                                </tr>
+                                <tr>
+                                    <td>AUC Score (Test)</td>
+                                    <td class="highlight">0.811</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div>
+                            <h3>특성 중요도 (Gain)</h3>
+                            <div class="chart-container">
+                                <canvas id="ko-featLGBMChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Comparison -->
+            <section id="ko-comparison">
+                <h2>모델 비교</h2>
+                <div class="card">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>모델</th>
+                                <th>F1 Score (Test)</th>
+                                <th>AUC Score (Test)</th>
+                                <th>비고</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>로지스틱 회귀</strong></td>
+                                <td class="highlight">0.739</td>
+                                <td class="highlight">0.812</td>
+                                <td>가장 균형 잡힌 성능</td>
+                            </tr>
+                            <tr>
+                                <td>랜덤 포레스트 (BO)</td>
+                                <td>0.733</td>
+                                <td>0.809</td>
+                                <td>안정적</td>
+                            </tr>
+                            <tr>
+                                <td>LightGBM (BO)</td>
+                                <td>0.736</td>
+                                <td>0.811</td>
+                                <td>가장 빠름</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
 
-                <h3>상위 3개 공통 중요 특성 (Top 3 Common Feature Importance)</h3>
-                <p>
-                    모든 모델에서 골드 격차, 경험치 격차, 드래곤이 승패에 영향을 미치는 가장 중요한 요인임이 입증되었습니다.
-                </p>
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>순위</th>
-                            <th>특성</th>
-                            <th>중요도 특성</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td><strong>골드 격차 (Gold Difference)</strong></td>
-                            <td class="highlight">가장 중요 (계수 = 0.96)</td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td><strong>경험치 격차 (Experience Difference)</strong></td>
-                            <td>높은 상관관계 (계수 = 0.51)</td>
-                        </tr>
-                        <tr>
-                            <td>3</td>
-                            <td><strong>드래곤 (Dragons)</strong></td>
-                            <td>전략적 가치 (계수 = 0.26)</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </section>
+                <div class="card">
+                    <h3><i class="fas fa-chart-bar"></i> 특성 중요도 분석 (Feature Importance Analysis)</h3>
+                    <p>
+                        로지스틱 회귀 모델은 각 특성이 승리 확률에 미치는 영향을 가장 명확하게 보여줍니다.
+                    </p>
+                    <div class="chart-container" style="margin-bottom: 2rem;">
+                        <canvas id="ko-featLRCompChart"></canvas>
+                    </div>
 
-        <!-- Conclusion -->
-        <section id="conclusion">
-            <h2>결론</h2>
-            <div class="card">
-                <h3>핵심 발견 (Key Findings)</h3>
-                <ul>
-                    <li><strong>골드 격차:</strong> 가장 중요한 특성 (계수 = 0.96)</li>
-                    <li><strong>경험치 격차:</strong> 계수 = 0.51 / 골드 격차와의 상관계수 = 0.89</li>
-                    <li><strong>드래곤:</strong> 계수 = 0.26 / 승률 상승폭 = ~22%p ⬆</li>
-                </ul>
+                    <h3>상위 3개 공통 중요 특성 (Top 3 Common Feature Importance)</h3>
+                    <p>
+                        모든 모델에서 골드 격차, 경험치 격차, 드래곤이 승패에 영향을 미치는 가장 중요한 요인임이 입증되었습니다.
+                    </p>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>순위</th>
+                                <th>특성</th>
+                                <th>중요도 특성</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td><strong>골드 격차 (Gold Difference)</strong></td>
+                                <td class="highlight">가장 중요 (계수 = 0.96)</td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td><strong>경험치 격차 (Experience Difference)</strong></td>
+                                <td>높은 상관관계 (계수 = 0.51)</td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td><strong>드래곤 (Dragons)</strong></td>
+                                <td>전략적 가치 (계수 = 0.26)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
 
-                <h3>모델 성능 (Model Performance)</h3>
-                <ul>
-                    <li><strong>최적 모델:</strong> 로지스틱 회귀 (Logistic Regression)</li>
-                    <li><strong>f1-score:</strong> 0.74</li>
-                    <li><strong>AUC:</strong> 0.82</li>
-                </ul>
+            <!-- Conclusion -->
+            <section id="ko-conclusion">
+                <h2>결론</h2>
+                <div class="card">
+                    <h3>핵심 발견 (Key Findings)</h3>
+                    <ul>
+                        <li><strong>골드 격차:</strong> 가장 중요한 특성 (계수 = 0.96)</li>
+                        <li><strong>경험치 격차:</strong> 계수 = 0.51 / 골드 격차와의 상관계수 = 0.89</li>
+                        <li><strong>드래곤:</strong> 계수 = 0.26 / 승률 상승폭 = ~22%p ⬆</li>
+                    </ul>
 
-                <h3>인사이트 (Insights)</h3>
-                <ol style="margin-top: 1rem; padding-left: 1.5rem; color: #a09b8c;">
-                    <li style="margin-bottom: 0.5rem;">데스 없이 라인에 오래 머무는 것은 골드와 경험치를 동시에 증가시킵니다.</li>
-                    <li style="margin-bottom: 0.5rem;">게임 초반 단계에서 강력한 라인 푸쉬 또는 제어권이 필요합니다.</li>
-                    <li style="margin-bottom: 0.5rem;">초반 전략으로 전령보다 드래곤을 우선시하는 것이 더 확실한 승리 요인입니다.</li>
-                </ol>
-            </div>
-        </section>
+                    <h3>모델 성능 (Model Performance)</h3>
+                    <ul>
+                        <li><strong>최적 모델:</strong> 로지스틱 회귀 (Logistic Regression)</li>
+                        <li><strong>f1-score:</strong> 0.74</li>
+                        <li><strong>AUC:</strong> 0.82</li>
+                    </ul>
 
-        <footer>
-            <p>분석 포트폴리오 제작: Antigravity | 원본 데이터: LOL_Match_Prediction_Analysis.ipynb</p>
-        </footer>
-    </main>
+                    <h3>인사이트 (Insights)</h3>
+                    <ol style="margin-top: 1rem; padding-left: 1.5rem; color: #a09b8c;">
+                        <li style="margin-bottom: 0.5rem;">데스 없이 라인에 오래 머무는 것은 골드와 경험치를 동시에 증가시킵니다.</li>
+                        <li style="margin-bottom: 0.5rem;">게임 초반 단계에서 강력한 라인 푸쉬 또는 제어권이 필요합니다.</li>
+                        <li style="margin-bottom: 0.5rem;">초반 전략으로 전령보다 드래곤을 우선시하는 것이 더 확실한 승리 요인입니다.</li>
+                    </ol>
+                </div>
+            </section>
+
+            <footer>
+                <p>분석 포트폴리오 제작: Antigravity | 원본 데이터: LOL_Match_Prediction_Analysis.ipynb</p>
+            </footer>
+        </main>
+    </div>
 
     <script src="script.js"></script>
 </body>
-
 
 </html>
